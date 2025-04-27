@@ -17,7 +17,7 @@ Ainda em **versão primordial**, sujeito a erros e melhorias futuras.
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/cobble.git
+git clone https://github.com/LRaposoRocha/cobble.git
 cd cobble
 ```
 
