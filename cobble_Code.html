@@ -3,9 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cobble Downloader – Ondas com Espaçamento Fixo</title>
-  <!-- Ajuste o href para o nome correto do seu CSS -->
+  <title>Cobble Downloader – Fundo Fixo</title>
   <link rel="stylesheet" href="cobble_Style.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+      transform-origin: top left;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
 </head>
 <body>
   <canvas id="waves"></canvas>
@@ -22,26 +41,32 @@
   </div>
 
   <script>
-    // Canvas waves
     const canvas = document.getElementById('waves');
     const ctx    = canvas.getContext('2d');
-    function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
 
-    // Color helpers
+    function setCanvas() {
+      const w = 1920;
+      const h = 1080;
+
+      const zoom = window.outerWidth / window.innerWidth;
+
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+
+      canvas.style.transform = `scale(${1 / zoom})`;
+    }
+
+    setCanvas();
+    window.addEventListener('resize', setCanvas);
+
     function hexToRgb(h) {
       const n = parseInt(h.slice(1), 16);
       return { r: (n>>16)&255, g: (n>>8)&255, b: n&255 };
     }
     function rgbToHex(r,g,b){
-      return "#" + [r,g,b].map(x=>{
-        const h = x.toString(16);
-        return h.length<2 ? "0"+h : h;
-      }).join("");
+      return "#" + [r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("");
     }
     function interpolateColor(c1,c2,f){
       const a = hexToRgb(c1), b = hexToRgb(c2);
@@ -52,7 +77,6 @@
       );
     }
 
-    // Wave setup
     const colorStops = ['#383B42','#1C1F26','#383B42'];
     const totalWaves = 13;
     const spacing    = 150;
@@ -68,7 +92,7 @@
       waves.push({
         amp:     40 + Math.random()*15,
         waveLen: 800 + Math.random()*400,
-        speed:   0.15 + Math.random()*0.1,
+        speed:   0.475 + Math.random()*0.1,
         phase:   Math.random()*Math.PI*2,
         color,
         yBase:   offsetTop + spacing * i
@@ -103,7 +127,6 @@
     }
     animateWaves();
 
-    // Form submission
     document.getElementById('download-form').addEventListener('submit', async e => {
       e.preventDefault();
       const form = new FormData(e.target);
