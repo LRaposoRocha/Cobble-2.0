@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cobble Downloader – Fundo Fixo</title>
+  <title>Cobble</title>
   <link rel="stylesheet" href="cobble2_Style.css">
 </head>
 <body>
   <canvas id="waves"></canvas>
   <div class="container">
-    <h1>Cobble</h1>
     <form id="download-form">
-      <input type="text" id="url" name="url" placeholder="Enter video URL" required>
-      <select name="format_type">
-        <option value="video">Vídeo</option>
-        <option value="audio">Áudio</option>
+      <h1>Cobble</h1>
+      <input type="text" id="url" name="url" placeholder="Cole o link do vídeo" required>
+      <select name="format_type" id="format">
+        <option value="video">Vídeo (.mp4)</option>
+        <option value="audio">Áudio (.mp3)</option>
       </select>
-      <button type="submit">Download</button>
+      <button type="submit">Baixar</button>
+      <p id="status-message" class="hidden">Iniciando download...</p>
+      <progress id="progress-bar" value="0" max="100" class="hidden"></progress>
     </form>
   </div>
   <script src="cobble2_Script.js"></script>
