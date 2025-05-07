@@ -2,14 +2,11 @@
 <html lang = "pt-BR">
 
 <head>
-
   <meta charset = "UTF-8">
   <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
-
   <title>Cobble</title>
-
   <link rel = "stylesheet" href = "cobble2_Style.css">
-  <script src = "cobble2_Script.js"></script>
+  <script src = "cobble2_Script.js" defer></script>
 </head>
 
 <body>
@@ -17,20 +14,24 @@
   <canvas id = "waves"></canvas>
 
   <div class = "container">
-
     <form id = "download-form">
-
       <h1>Cobble</h1>
+
       <input type = "text" id = "url" name = "url" placeholder = "Cole o link do vídeo" required>
       <select name = "format_type" id = "format">
-
         <option value = "video">Vídeo (.mp4)</option>
         <option value = "audio">Áudio (.mp3)</option>
       </select>
 
       <button type = "submit">Baixar</button>
 
-      <p id = "status-message" class = "hidden">Iniciando download...</p>
+      <div class = "feedback">
+        <div class = "loader-wrapper hidden">
+          <iframe src = "gif_carregamento.html" class = "loader-frame"></iframe>
+        </div>
+        <p id = "status-message" class = "hidden">Iniciando download...</p>
+      </div>
+      
     </form>
   </div>
 

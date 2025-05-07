@@ -4,12 +4,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const canvas = document.getElementById('waves');
   const ctx = canvas.getContext('2d');
+  const loaderWrapper = document.querySelector('.loader-wrapper');
+  const status = document.getElementById('status-message');
   document.getElementById('url').setAttribute('autocomplete', 'off');
 
   // ===================== Inicialização do Canvas =====================
 
   function setCanvas() {
-
     const w = 1920;
     const h = 1080;
     const zoom = window.outerWidth / window.innerWidth;
@@ -27,18 +28,15 @@ window.addEventListener("DOMContentLoaded", () => {
   // ===================== Funções de Conversão de Cores =====================
 
   function hexToRgb(h) {
-
     const n = parseInt(h.slice(1), 16);
     return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
   }
 
   function rgbToHex(r, g, b) {
-
     return "#" + [r, g, b].map(x => x.toString(16).padStart(2, "0")).join("");
   }
 
   function interpolateColor(c1, c2, f) {
-
     const a = hexToRgb(c1), b = hexToRgb(c2);
     return rgbToHex(
       Math.round(a.r + f * (b.r - a.r)),
@@ -56,15 +54,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const waves = [];
 
   for (let i = 0; i < totalWaves; i++) {
-
     const f = i / (totalWaves - 1);
     const color = f < 0.5
-
       ? interpolateColor(colorStops[0], colorStops[1], f * 2)
       : interpolateColor(colorStops[1], colorStops[2], (f - 0.5) * 2);
 
     waves.push({
-
       amp: 40 + Math.random() * 15,
       waveLen: 800 + Math.random() * 400,
       speed: 0.50 + Math.random() * 0.1,
@@ -77,7 +72,6 @@ window.addEventListener("DOMContentLoaded", () => {
   // ===================== Animação das Ondas =====================
 
   function animateWaves() {
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -113,47 +107,42 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const url = document.getElementById('url').value;
     const format = document.getElementById('format').value;
-    const status = document.getElementById('status-message');
 
     status.classList.remove('hidden');
+    loaderWrapper.classList.remove('hidden');
     status.textContent = "Iniciando download...";
 
     const source = new EventSource("http://127.0.0.1:8000/progress?" + new URLSearchParams({ url, format }));
     let done = false;
 
     source.onmessage = e => {
-
       try {
-
         const data = JSON.parse(e.data);
         if (data.status === "downloading") {
-
           status.textContent = "Baixando vídeo...";
         }
-
         if (data.status === "done" && !done) {
-
           status.textContent = "Download concluído com sucesso.";
+          loaderWrapper.classList.add('hidden');
           source.close();
           done = true;
         }
-
       } catch {}
     };
 
     try {
-
       const resp = await fetch('http://127.0.0.1:8000/download?' + new URLSearchParams({ url, format }));
       if (!resp.ok) throw new Error(await resp.text());
 
       if (!done) {
         status.textContent = "Download concluído com sucesso.";
+        loaderWrapper.classList.add('hidden');
         source.close();
       }
 
     } catch (err) {
-
       status.textContent = "Erro ao conectar com o servidor.";
+      loaderWrapper.classList.add('hidden');
       console.error(err);
       source.close();
     }
